@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Food Find Website</title>
+    <link href="../dist/output.css" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Scroll button -->
+    <button
+      onclick="scrollToTop()"
+      id="topBtn"
+      class="hidden fixed bottom-6 right-6 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-full shadow-lg z-50"
+    >
+      ⬆ Top
+    </button>
+
+    <!-- logo section -->
+    <header class="py-4">
+      <img src="../picture/logo.png" alt="logo" class="h-16 mx-auto" />
+    </header>
+
+    <!-- page title section -->
+    <section
+      style="background-image: url(../picture/page-title.jpg)"
+      class="relative bg-cover bg-center h-[400px] flex justify-center items-center text-white"
+    >
+      <div class="absolute bg-black opacity-50 inset-0"></div>
+
+      <div class="absolute text-center px-4 z-10 text-white">
+        <h1 class="text-4xl font-bold mb-4">
+          Search Your <br />
+          Favorite Food
+        </h1>
+        <p class="text-sm mb-4">
+          A hardful of simple ingredients typify the fresh, vibrate <br />
+          flavors of Greek cooking
+        </p>
+      </div>
+    </section>
+
+    <!-- Search Bar -->
+    <div
+      class="flex bg-white rounded-md overflow-hidden shadow-md max-w-xl mx-auto mt-3"
+    >
+      <input
+        type="text"
+        id="search-input"
+        placeholder="Search your favorite food..."
+        class="flex-grow px-4 py-2 text-gray-700 focus:outline-none"
+      />
+      <button
+        onclick="searchFood()"
+        class="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 font-semibold"
+      >
+        Search
+      </button>
+    </div>
+
+    <!-- Food Cards Section -->
+    <section class="py-10 px-4">
+      <div
+        id="food-container"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto"
+      ></div>
+    </section>
+
+    <!-- Modal -->
+    <div
+      id="modal"
+      class="fixed inset-0 bg-black bg-opacity-70 hidden justify-center items-center z-50"
+    >
+      <div
+        class="bg-white p-6 rounded-lg w-11/12 max-w-xl max-h-[90vh] overflow-y-auto relative"
+      >
+        <h2 id="meal-title" class="text-2xl font-bold mb-2"></h2>
+        <img
+          id="meal-image"
+          src=""
+          alt=""
+          class="w-full h-60 object-cover rounded mb-4"
+        />
+        <p id="meal-instructions" class="text-gray-700 text-sm mb-6"></p>
+
+        <!-- Close Button at the Bottom -->
+        <div class="flex justify-end mt-4">
+          <button
+            onclick="closeModal()"
+            class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded shadow"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

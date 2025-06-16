@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Food Finder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Smooth scroll */
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+
+  <!-- 🔝 Back to Top Button -->
+  <button onclick="scrollToTop()" id="topBtn"
+    class="hidden fixed bottom-6 right-6 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-full shadow-lg z-50">
+    ⬆ Top
+  </button>
+
+  <!-- 🔍 Header Section -->
+  <header class="h-[80vh] bg-cover bg-center relative flex flex-col justify-center items-center text-white text-center" style="background-image: url('https://images.unsplash.com/photo-1605478508131-0c093fba9c44?auto=format&fit=crop&w=1470&q=80');">
+    <img src="https://cdn-icons-png.flaticon.com/512/3480/3480434.png" alt="Logo" class="w-20 h-20 mb-4">
+    <h1 class="text-4xl font-bold drop-shadow">Search Your Favorite Food</h1>
+    <p class="mt-2 mb-6 drop-shadow">Find the best recipes across the world</p>
+    <div class="flex w-full max-w-lg mx-auto px-4">
+      <input id="search-input" type="text" placeholder="e.g. rice, pasta, chicken..."
+        class="flex-grow px-4 py-2 rounded-l focus:outline-none text-black" />
+      <button onclick="searchFood()"
+        class="bg-yellow-500 hover:bg-yellow-600 px-6 py-2 rounded-r text-white font-semibold">Search</button>
+    </div>
+  </header>
+
+  <!-- 🍱 Food Cards Section -->
+  <section class="py-10 px-4">
+    <div id="food-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+      <!-- JS will inject food cards here -->
+    </div>
+  </section>
+
+  <!-- 🍽 Modal -->
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-70 hidden justify-center items-center z-50">
+    <div class="bg-white p-6 rounded-lg w-11/12 max-w-xl relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeModal()" class="absolute top-2 right-3 text-xl text-red-600 font-bold">&times;</button>
+      <h2 id="meal-title" class="text-2xl font-bold mb-2"></h2>
+      <img id="meal-image" src="" alt="" class="w-full h-60 object-cover rounded mb-4" />
+      <p id="meal-instructions" class="text-gray-700 text-sm"></p>
+    </div>
+  </div>
+
+  <!-- 📜 JavaScript -->
+  <script>
+    const foodContainer = document.getElementById('food-container');
+    const modal = document.getElementById('modal');
+    const mealTitle = document.getElementById('meal-title');
+    const mealImage = document.getElementById('meal-image');
+    const mealInstructions = document.getElementById('meal-instructions');
+    const topBtn = document.getElementById('topBtn');
+
+    // Load default food on page load
+    window.onload = () => {
+      loadDefaultFood("chicken");
+    };
+
+    // Scroll button show/hide
+    window.onscroll = () => {
+      if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        topBtn.classList.remove('hidden');
+      } else {
+        topBtn.classList.add('hidden');
+      }
+    };
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function loadDefaultFood(defaultFood) {
+      const url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${defaultFood}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      displayFoods(data.meals || []);
+    }
+
+    async function searchFood() {
+      const input = document.getElementById('search-input');
+      const foodName = input.value.trim();
+      if (!foodName) return alert("Please enter a food name");
+
+      const url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${foodName}`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (data.meals) {
+        displayFoods(data.meals);
+      } else {
+        foodContainer.innerHTML = `
+          <p class="col-span-full text-center text-red-600 font-semibold text-xl">No recipes found for "${foodName}"</p>
+        `;
+      }
+    }
+
+    function displayFoods(meals) {
+      foodContainer.innerHTML = '';
+      meals.forEach(meal => {
+        const div = document.createElement('div');
+        div.className = 'bg-white rounded shadow overflow-hidden hover:shadow-md transition duration-200';
+        div.innerHTML = `
+          <img src="${meal.strMealThumb}" alt="${meal.strMeal}" class="w-full h-48 object-cover">
+          <div class="p-4 flex flex-col justify-between h-40">
+            <h3 class="text-lg font-bold">${meal.strMeal}</h3>
+            <button class="mt-auto bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+              onclick="loadMealDetails('${meal.idMeal}')"> view More</button>
+          </div>
+        `;
+        foodContainer.appendChild(div);
+      });
+    }
+
+    async function loadMealDetails(id) {
+      const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
+      const data = await res.json();
+      const meal = data.meals[0];
+
+      mealTitle.innerText = meal.strMeal;
+      mealImage.src = meal.strMealThumb;
+      mealInstructions.innerText = meal.strInstructions;
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
