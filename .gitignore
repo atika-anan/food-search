@@ -1,3 +1,4 @@
-sample.html/
-full.html/
-recipe application.png/
+/sample.html
+/full.html
+/recipe application.png
+node_modules/
